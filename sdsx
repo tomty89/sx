@@ -41,8 +41,8 @@ trap 'cleanup exit' EXIT HUP TERM QUIT
 # This is done to indicate that the server is ready to accept connections.
 # Taking advantage of this feature allows launching the client directly from a
 # USR1 signal trap which obviates the need to poll for server readiness.
-trap 'systemd-run --user -u sx-client-"$tty" -G -t bash -lc \
-      "DISPLAY=:$tty XAUTHORITY=$XAUTHORITY ${*:-$cfgdir/sxrc}" & wait "$!"' USR1
+trap 'systemd-run --user -u sx-client-"$tty" -G -t bash -l /usr/local/bin/sdsx-template \
+      DISPLAY=:"$tty" XAUTHORITY="$XAUTHORITY" exec "${@:-$cfgdir/sxrc}" & wait "$!"' USR1
 
 (trap '' USR1 && exec Xorg :"$tty" -keeptty vt"$tty" -noreset -auth "$XAUTHORITY") & pid=$!
 wait "$pid"
